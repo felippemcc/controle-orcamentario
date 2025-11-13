@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de controle e gestão de orçamentos por blocos e categorias">
+    <meta name="author" content="Felippe Moura">
+    <title>📊 Controle de Orçamentos</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>📊 Controle de Orçamentos</h1>
+            <p class="subtitle">Gestão completa de orçamentos por blocos e categorias</p>
+        </header>
+
+        <!-- KPI Cards -->
+        <section class="kpi-section">
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Orçado</div>
+                    <div class="kpi-value" id="totalOrcado">R$ 0,00</div>
+                    <div class="kpi-change">Últimos 30 dias</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Total Realizado</div>
+                    <div class="kpi-value" id="totalRealizado">R$ 0,00</div>
+                    <div class="kpi-change" id="percentRealizado">0% do orçado</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Diferença</div>
+                    <div class="kpi-value" id="diferenca">R$ 0,00</div>
+                    <div class="kpi-change" id="statusDiferenca">Dentro do orçamento</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Blocos Ativos</div>
+                    <div class="kpi-value" id="totalBlocos">0</div>
+                    <div class="kpi-change">Projetos em andamento</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blocos Section -->
+        <section class="blocos-section">
+            <div class="section-header">
+                <h2 class="section-title">Blocos de Orçamento</h2>
+                <button class="btn btn-primary" id="btnNovoBloco">
+                    <span>+</span> Novo Bloco
+                </button>
+            </div>
+
+            <div class="blocos-grid" id="blocosContainer">
+                <!-- Blocos serão inseridos dinamicamente aqui -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal Novo/Editar Bloco -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Novo Bloco de Orçamento</h3>
+                <button class="close-btn" id="btnCloseModal">&times;</button>
+            </div>
+            <form id="blocoForm">
+                <div class="form-group">
+                    <label for="nomeBloco">Nome do Bloco *</label>
+                    <input 
+                        type="text" 
+                        id="nomeBloco" 
+                        required 
+                        placeholder="Ex: Infraestrutura, Marketing, RH"
+                        autocomplete="off"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="descricao">Descrição</label>
+                    <textarea 
+                        id="descricao" 
+                        rows="3" 
+                        placeholder="Descrição opcional do bloco"
+                    ></textarea>
+                </div>
+                
+                <div class="input-group">
+                    <div class="form-group">
+                        <label for="orcado">Valor Orçado (R$) *</label>
+                        <input 
+                            type="number" 
+                            id="orcado" 
+                            required 
+                            min="0" 
+                            step="0.01" 
+                            placeholder="0,00"
+                        >
+                    </div>
+                    <div class="form-group">
+                        <label for="realizado">Valor Realizado (R$)</label>
+                        <input 
+                            type="number" 
+                            id="realizado" 
+                            min="0" 
+                            step="0.01" 
+                            placeholder="0,00" 
+                            value="0"
+                        >
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="categoria">Categoria *</label>
+                    <select id="categoria" required>
+                        <option value="">Selecione...</option>
+                        <option value="Infraestrutura">Infraestrutura</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="Recursos Humanos">Recursos Humanos</option>
+                        <option value="Tecnologia">Tecnologia</option>
+                        <option value="Produção">Produção</option>
+                        <option value="Administrativo">Administrativo</option>
+                        <option value="Cultural">Cultural</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" id="btnCancelar">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        Salvar Bloco
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Scripts -->
+    <script src="js/storage.js"></script>
+    <script src="js/modal.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

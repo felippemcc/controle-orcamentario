@@ -1,0 +1,57 @@
+# Controle de Orçamentos - .gitignore
+
+# Dependências (se usar Node.js no futuro)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# IDEs e Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Sistema Operacional
+Thumbs.db
+Desktop.ini
+._*
+
+# Logs
+*.log
+logs/
+
+# Temporários
+*.tmp
+*.temp
+.cache/
+
+# Build (se adicionar bundler)
+dist/
+build/
+.parcel-cache/
+
+# Testes (se adicionar)
+coverage/
+.nyc_output/
+
+# Ambiente
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Backup
+*.bak
+*.backup
+*.old
+
+# Netlify
+.netlify/
+
+# Documentação temporária
+docs/drafts/
