@@ -2,173 +2,238 @@
 
 Sistema de gestão e controle de orçamentos por blocos e categorias. Interface minimalista e intuitiva para gerenciar orçamentos de projetos, departamentos ou categorias.
 
-![Status](https://img.shields.io/badge/status-active-success.svg)
-![Version](https://img.shields.io/badge/version-2.0.0-blue.svg)
-![License](https://img.shields.io/badge/license-MIT-green.svg)
+![Version](https://img.shields.io/badge/version-2.0.0-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
 
-## 🎯 Funcionalidades
+## ✨ Funcionalidades
 
-### Dashboard com KPIs
-- **Total Orçado**: Soma de todos os valores orçados
-- **Total Realizado**: Soma de todos os valores já realizados
-- **Diferença**: Comparativo entre orçado e realizado
-- **Blocos Ativos**: Quantidade de blocos em andamento
+### Dashboard e KPIs
+- 📈 **Total Orçado**: Soma de todos os valores orçados
+- 💰 **Total Realizado**: Soma de todos os valores já realizados
+- 📊 **Diferença**: Comparativo entre orçado e realizado
+- 🔢 **Blocos Ativos**: Quantidade de blocos em andamento
 
-### Gestão de Blocos
-- ✅ Criar novos blocos de orçamento
-- ✅ Visualizar progresso em tempo real
-- ✅ Indicadores visuais de status (verde/amarelo/vermelho)
-- ✅ Organização por categorias
-- ✅ Exclusão de blocos
-- ✅ Persistência local dos dados
+### Gerenciamento de Blocos
+- ✅ **Criar blocos**: Adicione novos blocos de orçamento
+- ✏️ **Editar blocos**: Modifique blocos existentes (v2.0)
+- 🗑️ **Excluir blocos**: Remova blocos com confirmação
+- 👁️ **Visualizar progresso**: Acompanhe em tempo real
+- 🎯 **Indicadores visuais**: Status por cores (verde/amarelo/vermelho)
 
-### Interface
-- 🎨 Design minimalista e moderno
-- 📱 Totalmente responsivo (mobile, tablet, desktop)
-- ⚡ Feedback visual instantâneo
-- 🔔 Notificações toast
-- 🌙 Suporte a dark mode (opcional)
+### Organização e Filtros
+- 📁 **8 categorias pré-definidas**: Infraestrutura, Marketing, RH, Tecnologia, Produção, Administrativo, Cultural, Outros
+- 🔍 **Filtro por categoria**: Visualize apenas a categoria desejada (v2.0)
+- 📦 **Empty states**: Mensagens quando não há blocos
+
+### Interface e Experiência
+- 🎨 **Design minimalista**: Interface clean e moderna
+- 🌙 **Modo escuro**: Toggle para tema claro/escuro (v2.0)
+- 📱 **Totalmente responsivo**: Funciona em mobile, tablet e desktop
+- ⚡ **Feedback instantâneo**: Animações e transições suaves
+- 🔔 **Notificações toast**: Confirmações visuais de ações
+
+### Dados e Persistência
+- 💾 **LocalStorage**: Todos os dados salvos localmente
+- 🔒 **Privacidade total**: Nenhum dado enviado para servidores
+- 💡 **Preferências salvas**: Tema escolhido é mantido
 
 ## 🛠️ Tecnologias
 
 - **HTML5** - Estrutura semântica
-- **CSS3** - Grid, Flexbox, Variáveis CSS, Animações
-- **JavaScript (Vanilla)** - ES6+, Modular
+- **CSS3** - Grid, Flexbox, Variáveis CSS, Animações, Dark Mode
+- **JavaScript (Vanilla)** - ES6+, Modular, sem dependências
 - **LocalStorage** - Persistência de dados local
 
 ## 📁 Estrutura do Projeto
 
 ```
-controle-orcamentos/
+controle-orcamentario/
 │
-├── index.html                 # Página principal
+├── index.html              # Página principal
 │
 ├── css/
-│   ├── style.css             # Estilos principais
-│   └── responsive.css        # Media queries
+│   ├── style.css          # Estilos principais + Dark Mode
+│   └── responsive.css     # Media queries
 │
 ├── js/
-│   ├── app.js                # Lógica principal
-│   ├── modal.js              # Gerenciamento de modais
-│   └── storage.js            # LocalStorage
+│   ├── app.js             # Lógica principal (CRUD, filtros, tema)
+│   ├── modals.js          # Gerenciamento de modais
+│   └── storage.js         # Funções auxiliares LocalStorage
 │
 ├── assets/
-│   └── favicon.ico           # Ícone do site
+│   └── favicon.ico        # Ícone do site
 │
-├── docs/
-│   └── screenshots/          # Capturas de tela
-│
-├── README.md                 # Documentação
-├── .gitignore                # Arquivos ignorados
-└── LICENSE                   # Licença MIT
+├── README.md              # Documentação
+├── .gitignore            # Arquivos ignorados
+└── LICENSE               # Licença MIT
 ```
 
 ## 🚀 Como Usar
 
-### Opção 1: Abrir Localmente
+### Instalação Local
 
 1. Clone o repositório:
 ```bash
-git clone https://github.com/felippemcc/controle-orcamentos.git
-cd controle-orcamentos
+git clone https://github.com/felippemcc/controle-orcamentario.git
+cd controle-orcamentario
 ```
 
 2. Abra o arquivo `index.html` no navegador
-   - Ou use Live Server no VS Code
-   - Ou use Python: `python -m http.server 8000`
+   - Duplo clique no arquivo, ou
+   - Use Live Server no VS Code, ou
+   - Use Python: `python -m http.server 8000`
 
-### Opção 2: Deploy no Netlify
+### Deploy
 
+#### Netlify
 1. Faça login no [Netlify](https://www.netlify.com)
 2. Arraste a pasta do projeto para o Netlify Drop
 3. Ou conecte seu repositório GitHub para deploy automático
 
-### Opção 3: GitHub Pages
-
+#### GitHub Pages
 1. Vá em Settings → Pages
 2. Selecione a branch `main` e pasta `root`
 3. Salve e aguarde alguns minutos
-4. Acesse: `https://felippemcc.github.io/controle-orcamentos`
+4. Acesse: `https://seu-usuario.github.io/controle-orcamentario`
 
-## 💻 Uso da Aplicação
+## 📖 Guia de Uso
 
-### Criar um Novo Bloco
-
-1. Clique em **"+ Novo Bloco"**
+### Criar um Bloco
+1. Clique em "+ Novo Bloco"
 2. Preencha os dados:
    - Nome do bloco (obrigatório)
    - Descrição (opcional)
    - Valor orçado (obrigatório)
    - Valor realizado
    - Categoria
-3. Clique em **"Salvar Bloco"**
+3. Clique em "Salvar Bloco"
 
-### Acompanhar Progresso
+### Editar um Bloco
+1. Clique no ícone ✏️ no card do bloco
+2. Modifique os dados desejados
+3. Clique em "Salvar Bloco"
 
-- **Verde**: 0-80% do orçamento utilizado
-- **Amarelo**: 80-100% do orçamento utilizado  
-- **Vermelho**: Acima de 100% (orçamento excedido)
+### Filtrar por Categoria
+1. Use o dropdown no topo da seção "Blocos de Orçamento"
+2. Selecione a categoria desejada
+3. Os blocos serão filtrados automaticamente
+
+### Alternar Tema (Claro/Escuro)
+1. Clique no toggle ☀️/🌙 no header
+2. A preferência será salva automaticamente
+
+### Indicadores de Status
+- 🟢 **Verde**: 0-80% do orçamento utilizado
+- 🟡 **Amarelo**: 80-100% do orçamento utilizado
+- 🔴 **Vermelho**: Acima de 100% (orçamento excedido)
 
 ### Excluir um Bloco
-
 1. Clique no ícone 🗑️ no card do bloco
 2. Confirme a exclusão
 
 ## 🎨 Personalização
 
-### Alterar Cores
+### Cores do Tema
 
 Edite as variáveis CSS em `css/style.css`:
 
 ```css
 :root {
-    --bg: #FAFAFA;          /* Fundo */
-    --card: #FFFFFF;        /* Cards */
-    --text: #1A1A1A;        /* Texto principal */
-    --accent: #3B82F6;      /* Cor de destaque */
-    --success: #10B981;     /* Verde */
-    --warning: #F59E0B;     /* Amarelo */
-    --danger: #EF4444;      /* Vermelho */
+  --bg: #FAFAFA;           /* Fundo claro */
+  --card: #FFFFFF;         /* Cards */
+  --text: #1A1A1A;         /* Texto principal */
+  --accent: #3B82F6;       /* Cor de destaque */
+  --success: #10B981;      /* Verde */
+  --warning: #F59E0B;      /* Amarelo */
+  --danger: #EF4444;       /* Vermelho */
+}
+
+[data-theme="dark"] {
+  --bg: #0F0F0F;           /* Fundo escuro */
+  --card: #1A1A1A;         /* Cards escuros */
+  --text: #FAFAFA;         /* Texto claro */
+  /* ... */
 }
 ```
 
 ### Adicionar Categorias
 
-Edite o `<select>` em `index.html`:
+Edite o `<select>` em `index.html` (aparece em 2 lugares):
 
 ```html
-<option value="NovaCategoria">Nova Categoria</option>
+<option value="NovaCategoria">🆕 Nova Categoria</option>
 ```
 
-## 📊 Dados e Privacidade
+## 🔐 Privacidade e Segurança
 
-- Todos os dados são salvos **localmente** no navegador (LocalStorage)
-- Nenhum dado é enviado para servidores externos
-- Para backup, use a função de exportação (futura feature)
-- Limpar cache do navegador apaga os dados
+- ✅ Todos os dados são salvos **localmente** no navegador (LocalStorage)
+- ✅ **Nenhum dado** é enviado para servidores externos
+- ✅ Não há coleta de informações pessoais
+- ⚠️ Limpar cache do navegador **apaga todos os dados**
+- 💡 Para backup futuro, será implementada exportação em PDF/Excel
 
-## 🔜 Próximas Funcionalidades
+## 🔜 Roadmap
 
-- [ ] Editar blocos existentes
-- [ ] Filtros por categoria e período
+### ✅ Implementado (v2.0)
+- [x] Criar blocos de orçamento
+- [x] Visualizar progresso em tempo real
+- [x] Indicadores visuais de status
+- [x] Organização por categorias
+- [x] Exclusão de blocos
+- [x] Persistência local dos dados
+- [x] Design responsivo
+- [x] **Editar blocos existentes** (Novo!)
+- [x] **Filtros por categoria** (Novo!)
+- [x] **Modo escuro completo** (Novo!)
+
+### 🚧 Em Desenvolvimento
 - [ ] Gráficos interativos (Chart.js)
 - [ ] Exportação para PDF/Excel
+- [ ] Filtros por período/data
+
+### 🔮 Futuro (v3.0+)
 - [ ] Histórico de alterações
-- [ ] Modo escuro
 - [ ] Sub-itens dentro dos blocos
-- [ ] Multi-usuário com backend
+- [ ] Múltiplos projetos/workspaces
+- [ ] Tags personalizadas
+- [ ] Busca textual
+- [ ] Importação de dados (CSV)
+- [ ] Multi-usuário com backend (opcional)
+- [ ] Notificações de orçamento próximo do limite
+- [ ] Relatórios automáticos
 
-## 🤝 Contribuindo
+## 🤝 Como Contribuir
 
-Contribuições são bem-vindas! Para contribuir:
+Contribuições são muito bem-vindas! Para contribuir:
 
 1. Fork o projeto
-2. Crie uma branch: `git checkout -b minha-feature`
-3. Commit suas mudanças: `git commit -m 'Adiciona feature X'`
-4. Push para a branch: `git push origin minha-feature`
+2. Crie uma branch para sua feature: `git checkout -b feature/MinhaFeature`
+3. Commit suas mudanças: `git commit -m 'Adiciona MinhaFeature'`
+4. Push para a branch: `git push origin feature/MinhaFeature`
 5. Abra um Pull Request
 
-## 📝 Licença
+### Diretrizes
+- Mantenha o código limpo e documentado
+- Siga o padrão de código existente
+- Teste suas alterações antes de enviar
+- Atualize o README se necessário
+
+## 📝 Changelog
+
+### v2.0.0 (2024)
+- ✨ Adicionado edição de blocos existentes
+- ✨ Implementado filtro por categoria
+- ✨ Sistema completo de modo escuro (dark mode)
+- 🎨 Melhorias visuais no layout
+- 🐛 Correções de bugs menores
+
+### v1.0.0 (2024)
+- 🎉 Lançamento inicial
+- ✅ CRUD básico de blocos
+- 📊 Dashboard com KPIs
+- 📱 Interface responsiva
+
+## 📄 Licença
 
 Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
@@ -182,10 +247,14 @@ Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para ma
 
 ## 🙏 Agradecimentos
 
-- Design inspirado em Linear, Notion e Arc Browser
+- Design inspirado em [Linear](https://linear.app), [Notion](https://notion.so) e [Arc Browser](https://arc.net)
 - Ícones: Unicode Emoji
 - Fontes: System Fonts Stack
 
 ---
 
-**Feito com ❤️ por Felippe Moura**
+<div align="center">
+  Feito com ❤️ por Felippe Moura
+  <br>
+  ⭐ Deixe uma estrela se este projeto foi útil!
+</div>
