@@ -18,8 +18,16 @@
     <div class="container">
         <!-- Header -->
         <header>
-            <h1>📊 Controle de Orçamentos</h1>
-            <p class="subtitle">Gestão completa de orçamentos por blocos e categorias</p>
+            <div class="header-content">
+                <h1>📊 Controle de Orçamentos</h1>
+                <p class="subtitle">Gestão completa de orçamentos por blocos e categorias</p>
+            </div>
+            <div class="theme-toggle" id="themeToggle">
+                <span class="theme-icon">☀️</span>
+                <div class="theme-switch" id="themeSwitch">
+                    <div class="theme-slider">🌙</div>
+                </div>
+            </div>
         </header>
 
         <!-- KPI Cards -->
@@ -52,9 +60,22 @@
         <section class="blocos-section">
             <div class="section-header">
                 <h2 class="section-title">Blocos de Orçamento</h2>
-                <button class="btn btn-primary" id="btnNovoBloco">
-                    <span>+</span> Novo Bloco
-                </button>
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <select id="filtroCategoria" class="filtro-select">
+                        <option value="todas">📁 Todas as categorias</option>
+                        <option value="Infraestrutura">🏗️ Infraestrutura</option>
+                        <option value="Marketing">📢 Marketing</option>
+                        <option value="Recursos Humanos">👥 Recursos Humanos</option>
+                        <option value="Tecnologia">💻 Tecnologia</option>
+                        <option value="Produção">🏭 Produção</option>
+                        <option value="Administrativo">📋 Administrativo</option>
+                        <option value="Cultural">🎭 Cultural</option>
+                        <option value="Outros">📦 Outros</option>
+                    </select>
+                    <button class="btn btn-primary" id="btnNovoBloco">
+                        <span>+</span> Novo Bloco
+                    </button>
+                </div>
             </div>
 
             <div class="blocos-grid" id="blocosContainer">
@@ -148,7 +169,7 @@
 
     <!-- Scripts -->
     <script src="js/storage.js"></script>
-    <script src="js/modal.js"></script>
+    <script src="js/modals.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>

@@ -1,299 +1,315 @@
-/**
- * APP.JS
- * Lógica principal da aplicação
- * Controla KPIs, renderização de blocos e interações
- */
+// ========================================
+// CONTROLE DE ORÇAMENTOS - APP.JS
+// ========================================
 
-const App = {
-    // Estado da aplicação
-    blocos: [],
+let blocos = JSON.parse(localStorage.getItem('blocos')) || [];
+let blocoEditando = null; // Armazena o índice do bloco sendo editado
+let categoriaFiltro = 'todas'; // Categoria selecionada no filtro
 
-    /**
-     * Inicializa a aplicação
-     */
-    init() {
-        // Carrega blocos salvos
-        this.blocos = Storage.carregarBlocos();
+// Inicializar tema
+function inicializarTema() {
+    const temaSalvo = localStorage.getItem('tema') || 'light';
+    aplicarTema(temaSalvo);
+}
 
-        // Inicializa módulos
-        Modal.init();
+// Aplicar tema
+function aplicarTema(tema) {
+    document.documentElement.setAttribute('data-theme', tema);
+    localStorage.setItem('tema', tema);
+    
+    const themeSwitch = document.getElementById('themeSwitch');
+    const themeIcon = document.querySelector('.theme-icon');
+    
+    if (tema === 'dark') {
+        themeSwitch.classList.add('active');
+        themeIcon.textContent = '🌙';
+    } else {
+        themeSwitch.classList.remove('active');
+        themeIcon.textContent = '☀️';
+    }
+}
 
-        // Vincula eventos
-        this.bindEvents();
+// Toggle tema
+function toggleTema() {
+    const temaAtual = document.documentElement.getAttribute('data-theme');
+    const novoTema = temaAtual === 'dark' ? 'light' : 'dark';
+    aplicarTema(novoTema);
+}
 
-        // Renderiza interface inicial
-        this.render();
-    },
+// Atualizar KPIs
+function atualizarKPIs() {
+    const totalOrcado = blocos.reduce((sum, b) => sum + parseFloat(b.orcado), 0);
+    const totalRealizado = blocos.reduce((sum, b) => sum + parseFloat(b.realizado), 0);
+    const diferenca = totalOrcado - totalRealizado;
+    const percentRealizado = totalOrcado > 0 ? (totalRealizado / totalOrcado * 100).toFixed(1) : 0;
 
-    /**
-     * Vincula eventos globais
-     */
-    bindEvents() {
-        // Submit do formulário
-        document.getElementById('blocoForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.salvarBloco();
-        });
-    },
+    document.getElementById('totalOrcado').textContent = formatarMoeda(totalOrcado);
+    document.getElementById('totalRealizado').textContent = formatarMoeda(totalRealizado);
+    document.getElementById('diferenca').textContent = formatarMoeda(Math.abs(diferenca));
+    document.getElementById('totalBlocos').textContent = blocos.length;
+    
+    const percentEl = document.getElementById('percentRealizado');
+    percentEl.textContent = `${percentRealizado}% do orçado`;
+    percentEl.className = 'kpi-change ' + (percentRealizado > 100 ? 'negative' : 'positive');
+    
+    const statusEl = document.getElementById('statusDiferenca');
+    if (diferenca > 0) {
+        statusEl.textContent = 'Dentro do orçamento';
+        statusEl.className = 'kpi-change positive';
+    } else if (diferenca < 0) {
+        statusEl.textContent = 'Acima do orçamento';
+        statusEl.className = 'kpi-change negative';
+    } else {
+        statusEl.textContent = 'Exato';
+        statusEl.className = 'kpi-change';
+    }
+}
 
-    /**
-     * Renderiza toda a interface
-     */
-    render() {
-        this.atualizarKPIs();
-        this.renderBlocos();
-    },
-
-    /**
-     * Atualiza os cards de KPI
-     */
-    atualizarKPIs() {
-        const totalOrcado = this.blocos.reduce((sum, b) => sum + parseFloat(b.orcado || 0), 0);
-        const totalRealizado = this.blocos.reduce((sum, b) => sum + parseFloat(b.realizado || 0), 0);
-        const diferenca = totalOrcado - totalRealizado;
-        const percentRealizado = totalOrcado > 0 ? (totalRealizado / totalOrcado * 100).toFixed(1) : 0;
-
-        // Atualiza valores
-        document.getElementById('totalOrcado').textContent = this.formatarMoeda(totalOrcado);
-        document.getElementById('totalRealizado').textContent = this.formatarMoeda(totalRealizado);
-        document.getElementById('diferenca').textContent = this.formatarMoeda(Math.abs(diferenca));
-        document.getElementById('totalBlocos').textContent = this.blocos.length;
-
-        // Atualiza percentual
-        const percentEl = document.getElementById('percentRealizado');
-        percentEl.textContent = `${percentRealizado}% do orçado`;
-        percentEl.className = 'kpi-change ' + (percentRealizado > 100 ? 'negative' : 'positive');
-
-        // Atualiza status da diferença
-        const statusEl = document.getElementById('statusDiferenca');
-        if (diferenca > 0) {
-            statusEl.textContent = 'Dentro do orçamento';
-            statusEl.className = 'kpi-change positive';
-        } else if (diferenca < 0) {
-            statusEl.textContent = 'Acima do orçamento';
-            statusEl.className = 'kpi-change negative';
-        } else {
-            statusEl.textContent = 'Exato';
-            statusEl.className = 'kpi-change';
-        }
-    },
-
-    /**
-     * Renderiza a lista de blocos
-     */
-    renderBlocos() {
-        const container = document.getElementById('blocosContainer');
-
-        // Estado vazio
-        if (this.blocos.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-state-icon">📦</div>
-                    <h3>Nenhum bloco criado ainda</h3>
-                    <p>Crie seu primeiro bloco de orçamento clicando no botão acima</p>
-                </div>
-            `;
-            return;
-        }
-
-        // Renderiza blocos
-        container.innerHTML = this.blocos
-            .map(bloco => this.renderBlocoCard(bloco))
-            .join('');
-
-        // Vincula eventos dos cards
-        this.bindBlocoEvents();
-    },
-
-    /**
-     * Renderiza um card de bloco
-     * @param {Object} bloco - Dados do bloco
-     * @returns {string} HTML do card
-     */
-    renderBlocoCard(bloco) {
-        const progresso = bloco.orcado > 0 
-            ? (bloco.realizado / bloco.orcado * 100).toFixed(1) 
-            : 0;
+// Renderizar blocos
+function renderBlocos() {
+    const container = document.getElementById('blocosContainer');
+    
+    // Filtrar blocos por categoria
+    const blocosFiltrados = categoriaFiltro === 'todas' 
+        ? blocos 
+        : blocos.filter(b => b.categoria === categoriaFiltro);
+    
+    if (blocosFiltrados.length === 0) {
+        const mensagem = categoriaFiltro === 'todas' 
+            ? 'Nenhum bloco criado ainda' 
+            : `Nenhum bloco na categoria "${categoriaFiltro}"`;
         
-        const progressClass = progresso > 100 ? 'danger' : progresso > 80 ? 'warning' : '';
-        const restante = bloco.orcado - bloco.realizado;
-        const statusRestante = restante >= 0 ? 'Restante' : 'Excedido';
-        const corRestante = restante >= 0 ? 'var(--success)' : 'var(--danger)';
+        container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1/-1;">
+                <div class="empty-state-icon">📦</div>
+                <h3>${mensagem}</h3>
+                <p>${categoriaFiltro === 'todas' ? 'Crie seu primeiro bloco de orçamento clicando no botão acima' : 'Tente selecionar outra categoria'}</p>
+            </div>
+        `;
+        return;
+    }
 
+    container.innerHTML = blocosFiltrados.map((bloco) => {
+        const index = blocos.indexOf(bloco); // Índice real no array original
+        const progresso = (bloco.realizado / bloco.orcado * 100).toFixed(1);
+        const progressClass = progresso > 100 ? 'danger' : progresso > 80 ? 'warning' : '';
+        
         return `
-            <div class="bloco-card" data-id="${bloco.id}">
+            <div class="bloco-card">
                 <div class="bloco-header">
-                    <div class="bloco-info">
-                        <div class="bloco-name">${this.escapeHtml(bloco.nome)}</div>
-                        <div class="bloco-meta">${this.escapeHtml(bloco.categoria)}</div>
+                    <div>
+                        <div class="bloco-name">${bloco.nome}</div>
+                        <div class="bloco-meta">${bloco.categoria}</div>
                     </div>
-                    <button class="btn btn-danger btn-excluir" data-id="${bloco.id}">
-                        🗑️
-                    </button>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary" onclick="editarBloco(${index})" style="padding: 8px 12px; font-size: 12px;" title="Editar bloco">
+                            ✏️
+                        </button>
+                        <button class="btn btn-secondary" onclick="excluirBloco(${index})" style="padding: 8px 12px; font-size: 12px;" title="Excluir bloco">
+                            🗑️
+                        </button>
+                    </div>
                 </div>
-                ${bloco.descricao ? `
-                    <p class="bloco-description">${this.escapeHtml(bloco.descricao)}</p>
-                ` : ''}
+                ${bloco.descricao ? `<p style="color: var(--text-light); font-size: 14px; margin-bottom: 16px;">${bloco.descricao}</p>` : ''}
                 <div class="progress-bar">
-                    <div class="progress-fill ${progressClass}" 
-                         style="width: ${Math.min(progresso, 100)}%"></div>
+                    <div class="progress-fill ${progressClass}" style="width: ${Math.min(progresso, 100)}%"></div>
                 </div>
-                <div class="progress-info">
-                    <span class="progress-percent">${progresso}% realizado</span>
-                    <span class="progress-values">
-                        ${this.formatarMoeda(bloco.realizado)} / ${this.formatarMoeda(bloco.orcado)}
-                    </span>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 16px; font-size: 14px;">
+                    <span>${progresso}% realizado</span>
+                    <span style="color: var(--text-light);">${formatarMoeda(bloco.realizado)} / ${formatarMoeda(bloco.orcado)}</span>
                 </div>
                 <div class="bloco-stats">
                     <div class="stat">
-                        <span class="stat-value">${this.formatarMoeda(bloco.orcado)}</span>
+                        <span class="stat-value">${formatarMoeda(bloco.orcado)}</span>
                         <span class="stat-label">Orçado</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-value">${this.formatarMoeda(bloco.realizado)}</span>
+                        <span class="stat-value">${formatarMoeda(bloco.realizado)}</span>
                         <span class="stat-label">Realizado</span>
                     </div>
                     <div class="stat">
-                        <span class="stat-value" style="color: ${corRestante}">
-                            ${this.formatarMoeda(Math.abs(restante))}
+                        <span class="stat-value" style="color: ${bloco.orcado - bloco.realizado >= 0 ? 'var(--success)' : 'var(--danger)'}">
+                            ${formatarMoeda(Math.abs(bloco.orcado - bloco.realizado))}
                         </span>
-                        <span class="stat-label">${statusRestante}</span>
+                        <span class="stat-label">${bloco.orcado - bloco.realizado >= 0 ? 'Restante' : 'Excedido'}</span>
                     </div>
                 </div>
             </div>
         `;
-    },
+    }).join('');
+}
 
-    /**
-     * Vincula eventos dos cards de bloco
-     */
-    bindBlocoEvents() {
-        // Botões de excluir
-        document.querySelectorAll('.btn-excluir').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const id = parseInt(btn.dataset.id);
-                this.excluirBloco(id);
-            });
-        });
-
-        // Click no card para editar (opcional - descomente para habilitar)
-        /*
-        document.querySelectorAll('.bloco-card').forEach(card => {
-            card.addEventListener('click', () => {
-                const id = parseInt(card.dataset.id);
-                const bloco = this.blocos.find(b => b.id === id);
-                if (bloco) {
-                    Modal.abrir(bloco);
-                }
-            });
-        });
-        */
-    },
-
-    /**
-     * Salva (cria ou atualiza) um bloco
-     */
-    salvarBloco() {
-        const dados = Modal.obterDados();
-        const validacao = Modal.validar(dados);
-
-        if (!validacao.valido) {
-            Modal.exibirErros(validacao.erros);
-            return;
-        }
-
-        let sucesso = false;
-
-        if (Modal.modoEdicao && Modal.blocoEmEdicao) {
-            // Atualizar bloco existente
-            sucesso = Storage.atualizarBloco(Modal.blocoEmEdicao.id, dados);
-            if (sucesso) {
-                this.mostrarToast('Bloco atualizado com sucesso! ✓');
-            }
-        } else {
-            // Criar novo bloco
-            sucesso = Storage.adicionarBloco(dados);
-            if (sucesso) {
-                this.mostrarToast('Bloco criado com sucesso! ✓');
-            }
-        }
-
-        if (sucesso) {
-            this.blocos = Storage.carregarBlocos();
-            Modal.fechar();
-            this.render();
-        } else {
-            this.mostrarToast('Erro ao salvar bloco. Tente novamente.', 'error');
-        }
-    },
-
-    /**
-     * Exclui um bloco
-     * @param {number} id - ID do bloco
-     */
-    excluirBloco(id) {
-        const bloco = this.blocos.find(b => b.id === id);
-        
-        if (!bloco) return;
-
-        const confirmar = confirm(
-            `Tem certeza que deseja excluir o bloco "${bloco.nome}"?\n\nEsta ação não pode ser desfeita.`
-        );
-
-        if (!confirmar) return;
-
-        const sucesso = Storage.removerBloco(id);
-
-        if (sucesso) {
-            this.blocos = Storage.carregarBlocos();
-            this.render();
-            this.mostrarToast('Bloco excluído com sucesso!');
-        } else {
-            this.mostrarToast('Erro ao excluir bloco. Tente novamente.', 'error');
-        }
-    },
-
-    /**
-     * Exibe notificação toast
-     * @param {string} mensagem - Mensagem a exibir
-     * @param {string} tipo - Tipo da mensagem (success, error)
-     */
-    mostrarToast(mensagem, tipo = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = mensagem;
-        toast.classList.add('show');
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
-    },
-
-    /**
-     * Formata número como moeda brasileira
-     * @param {number} valor - Valor a formatar
-     * @returns {string} Valor formatado
-     */
-    formatarMoeda(valor) {
-        return new Intl.NumberFormat('pt-BR', {
-            style: 'currency',
-            currency: 'BRL'
-        }).format(valor);
-    },
-
-    /**
-     * Escapa HTML para prevenir XSS
-     * @param {string} texto - Texto para escapar
-     * @returns {string} Texto escapado
-     */
-    escapeHtml(texto) {
-        const div = document.createElement('div');
-        div.textContent = texto;
-        return div.innerHTML;
+// Aplicar filtro de categoria
+function filtrarPorCategoria(categoria) {
+    categoriaFiltro = categoria;
+    renderBlocos();
+    
+    // Atualizar aparência do select
+    const selectFiltro = document.getElementById('filtroCategoria');
+    if (selectFiltro) {
+        selectFiltro.value = categoria;
     }
-};
+}
 
-// Inicializa a aplicação quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', () => {
-    App.init();
+// Formatação de moeda
+function formatarMoeda(valor) {
+    return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+    }).format(valor);
+}
+
+// Abrir modal
+function openModal() {
+    const modal = document.getElementById('modal');
+    if (modal) {
+        modal.classList.add('active');
+        const form = document.getElementById('blocoForm');
+        if (form) {
+            form.reset();
+        }
+    }
+}
+
+// Fechar modal
+function closeModal() {
+    const modal = document.getElementById('modal');
+    if (modal) {
+        modal.classList.remove('active');
+    }
+}
+
+// Salvar bloco (criar ou editar)
+function salvarBloco(e) {
+    e.preventDefault();
+    
+    const blocoData = {
+        nome: document.getElementById('nomeBloco').value,
+        descricao: document.getElementById('descricao').value,
+        orcado: parseFloat(document.getElementById('orcado').value),
+        realizado: parseFloat(document.getElementById('realizado').value) || 0,
+        categoria: document.getElementById('categoria').value,
+        data: new Date().toISOString()
+    };
+
+    if (blocoEditando !== null) {
+        // Editando bloco existente
+        blocos[blocoEditando] = blocoData;
+        mostrarToast('Bloco atualizado com sucesso! ✓');
+        blocoEditando = null;
+    } else {
+        // Criando novo bloco
+        blocos.push(blocoData);
+        mostrarToast('Bloco criado com sucesso! ✓');
+    }
+
+    localStorage.setItem('blocos', JSON.stringify(blocos));
+    
+    closeModal();
+    renderBlocos();
+    atualizarKPIs();
+}
+
+// Editar bloco
+function editarBloco(index) {
+    blocoEditando = index;
+    const bloco = blocos[index];
+    
+    // Preencher o formulário com os dados do bloco
+    document.getElementById('nomeBloco').value = bloco.nome;
+    document.getElementById('descricao').value = bloco.descricao || '';
+    document.getElementById('orcado').value = bloco.orcado;
+    document.getElementById('realizado').value = bloco.realizado;
+    document.getElementById('categoria').value = bloco.categoria;
+    
+    // Mudar o título do modal
+    document.getElementById('modalTitle').textContent = 'Editar Bloco de Orçamento';
+    
+    // Abrir o modal
+    openModal();
+}
+
+// Excluir bloco
+function excluirBloco(index) {
+    if (confirm('Tem certeza que deseja excluir este bloco?')) {
+        blocos.splice(index, 1);
+        localStorage.setItem('blocos', JSON.stringify(blocos));
+        renderBlocos();
+        atualizarKPIs();
+        mostrarToast('Bloco excluído com sucesso!');
+    }
+}
+
+// Toast notification
+function mostrarToast(mensagem) {
+    const toast = document.getElementById('toast');
+    toast.textContent = mensagem;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// Inicialização quando o DOM carregar
+document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar tema
+    inicializarTema();
+    
+    // Renderizar blocos iniciais
+    renderBlocos();
+    atualizarKPIs();
+
+    // Toggle de tema
+    const themeToggle = document.getElementById('themeToggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTema);
+    }
+
+    // Botão Novo Bloco
+    const btnNovoBloco = document.getElementById('btnNovoBloco');
+    if (btnNovoBloco) {
+        btnNovoBloco.addEventListener('click', function() {
+            openModal();
+        });
+    }
+
+    // Filtro de categoria
+    const filtroCategoria = document.getElementById('filtroCategoria');
+    if (filtroCategoria) {
+        filtroCategoria.addEventListener('change', function() {
+            filtrarPorCategoria(this.value);
+        });
+    }
+
+    // Botão fechar modal (X)
+    const btnCloseModal = document.getElementById('btnCloseModal');
+    if (btnCloseModal) {
+        btnCloseModal.addEventListener('click', function() {
+            closeModal();
+        });
+    }
+
+    // Botão Cancelar
+    const btnCancelar = document.getElementById('btnCancelar');
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', function() {
+            closeModal();
+        });
+    }
+
+    // Form submit
+    const blocoForm = document.getElementById('blocoForm');
+    if (blocoForm) {
+        blocoForm.addEventListener('submit', salvarBloco);
+    }
+
+    // Fechar modal ao clicar fora
+    const modal = document.getElementById('modal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target.id === 'modal') {
+                closeModal();
+            }
+        });
+    }
 });

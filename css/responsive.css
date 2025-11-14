@@ -1,260 +1,40 @@
-/* ============================================
-   CONTROLE DE ORÇAMENTOS - RESPONSIVE.CSS
-   Media queries e adaptações para mobile
-   ============================================ */
+/* ========================================
+   RESPONSIVE - MEDIA QUERIES
+   ======================================== */
 
-/* Tablets (até 1024px) */
-@media (max-width: 1024px) {
-    .container {
-        max-width: 100%;
-    }
-
+@media (max-width: 768px) {
     .kpi-grid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
     }
 
     .blocos-grid {
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: 1fr;
     }
-}
 
-/* Mobile Large (até 768px) */
-@media (max-width: 768px) {
-    body {
-        padding: var(--spacing-md);
+    .input-group {
+        grid-template-columns: 1fr;
     }
 
     h1 {
         font-size: 24px;
     }
 
-    .subtitle {
-        font-size: 14px;
-    }
-
-    /* KPI Cards */
-    .kpi-grid {
-        grid-template-columns: 1fr;
-        gap: var(--spacing-md);
-    }
-
-    .kpi-value {
-        font-size: 28px;
-    }
-
-    /* Section Header */
     .section-header {
         flex-direction: column;
-        align-items: stretch;
-        gap: var(--spacing-md);
+        align-items: flex-start;
+        gap: 12px;
     }
 
-    .section-title {
-        font-size: 18px;
-    }
-
-    .btn-primary {
+    .btn {
         width: 100%;
         justify-content: center;
-    }
-
-    /* Blocos Grid */
-    .blocos-grid {
-        grid-template-columns: 1fr;
-    }
-
-    /* Bloco Card */
-    .bloco-name {
-        font-size: 16px;
-    }
-
-    .bloco-stats {
-        flex-direction: column;
-        gap: var(--spacing-sm);
-    }
-
-    .stat {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        text-align: left;
-        padding: var(--spacing-sm) 0;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .stat:last-child {
-        border-bottom: none;
-    }
-
-    .stat-value {
-        font-size: 18px;
-        order: 2;
-    }
-
-    .stat-label {
-        order: 1;
-        text-transform: none;
-        font-size: 14px;
-    }
-
-    /* Modal */
-    .modal {
-        padding: var(--spacing-md);
-    }
-
-    .modal-content {
-        padding: var(--spacing-lg);
-        max-height: 85vh;
-    }
-
-    .modal-title {
-        font-size: 20px;
-    }
-
-    /* Forms */
-    .input-group {
-        grid-template-columns: 1fr;
     }
 
     .form-actions {
         flex-direction: column-reverse;
     }
 
-    .form-actions .btn {
-        width: 100%;
-    }
-
-    /* Toast */
-    .toast {
-        left: var(--spacing-md);
-        right: var(--spacing-md);
-        bottom: var(--spacing-md);
-        max-width: none;
-    }
-
-    /* Empty State */
-    .empty-state {
-        padding: 40px var(--spacing-md);
-    }
-
-    .empty-state-icon {
-        font-size: 40px;
-    }
-}
-
-/* Mobile Small (até 480px) */
-@media (max-width: 480px) {
-    body {
-        padding: var(--spacing-sm);
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    .kpi-card {
-        padding: var(--spacing-md);
-    }
-
-    .kpi-value {
-        font-size: 24px;
-    }
-
-    .kpi-label,
-    .kpi-change {
-        font-size: 11px;
-    }
-
-    .bloco-card {
-        padding: var(--spacing-md);
-    }
-
-    .bloco-name {
-        font-size: 15px;
-    }
-
-    .bloco-meta {
-        font-size: 12px;
-    }
-
-    .stat-value {
-        font-size: 16px;
-    }
-
     .modal-content {
-        padding: var(--spacing-md);
-    }
-
-    input,
-    select,
-    textarea {
-        font-size: 16px; /* Evita zoom no iOS */
-    }
-}
-
-/* Landscape Mobile */
-@media (max-width: 768px) and (orientation: landscape) {
-    .modal-content {
-        max-height: 80vh;
-    }
-
-    .empty-state {
-        padding: 30px var(--spacing-md);
-    }
-}
-
-/* Dark Mode Support (opcional) */
-@media (prefers-color-scheme: dark) {
-    /* Descomente para ativar dark mode automático
-    :root {
-        --bg: #0F0F0F;
-        --card: #1A1A1A;
-        --text: #F0F0F0;
-        --text-light: #A0A0A0;
-        --border: #2A2A2A;
-    }
-
-    .modal {
-        background: rgba(0, 0, 0, 0.8);
-    }
-    */
-}
-
-/* Reduced Motion */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-    }
-
-    .toast {
-        transition: opacity 0.1s;
-    }
-}
-
-/* Print Styles */
-@media print {
-    body {
-        background: white;
-        padding: 0;
-    }
-
-    .btn,
-    .modal,
-    .toast {
-        display: none !important;
-    }
-
-    .kpi-card,
-    .bloco-card {
-        border: 1px solid #ccc;
-        page-break-inside: avoid;
-    }
-
-    .blocos-grid {
-        grid-template-columns: 1fr;
+        padding: 24px;
     }
 }
